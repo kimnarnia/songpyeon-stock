@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>송편 주식운세</title>
+<style>
+  @font-face {
+    font-family: 'SchoolSafetyRoundedSmile';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-R.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SchoolSafetyRoundedSmile';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2408-5@1.0/HakgyoansimDunggeunmisoTTF-B.woff2') format('woff2');
+    font-weight: 700;
+    font-display: swap;
+  }
+  :root{
+    --moon:#FFF6E5;
+    --sky-top:#2b3a67;
+    --sky-bot:#5c6ea8;
+    --cream:#FFF8ED;
+    --navy:#2b3a67;
+    --blue:#7e97c2;
+    --blue-dark:#5c6ea8;
+    --accent:#e8a33d;
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  button{font-family:inherit;}
+  body{
+    margin:0;
+    min-height:100vh;
+    font-family:"SchoolSafetyRoundedSmile","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    background:
+      radial-gradient(circle at 50% -10%, #ffe9b8 0%, rgba(255,233,184,0) 45%),
+      linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 45%, var(--cream) 45%, var(--cream) 100%);
+    color:var(--navy);
+    display:flex;
+    justify-content:center;
+    padding:0 0 60px;
+  }
+  .wrap{
+    width:100%;
+    max-width:480px;
+    padding:28px 20px 0;
+  }
+  .moon{
+    width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fffdf5, var(--moon) 60%, #ffe9ba 100%);
+    box-shadow:
+      0 0 26px 8px rgba(255,244,214,0.5),
+      0 0 50px 18px rgba(255,230,170,0.24);
+    margin:0 auto 22px;
+    position:relative;
+    animation:moonGlow 4.5s ease-in-out infinite;
+  }
+  @keyframes moonGlow{
+    0%,100%{
+      box-shadow:
+        0 0 26px 8px rgba(255,244,214,0.45),
+        0 0 50px 18px rgba(255,230,170,0.2);
+    }
+    50%{
+      box-shadow:
+        0 0 36px 12px rgba(255,244,214,0.7),
+        0 0 68px 26px rgba(255,230,170,0.32);
+    }
+  }
+  .stars{
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:480px; height:220px; pointer-events:none;
+  }
+  .stars span{
+    position:absolute; width:3px; height:3px; background:#fff; border-radius:50%;
+    animation:twinkle 3s ease-in-out infinite;
+  }
+  @keyframes twinkle{
+    0%,100%{ opacity:.2; }
+    50%{ opacity:1; }
+  }
+  h1{
+    text-align:center;
+    font-size:26px;
+    margin:6px 0 4px;
+    color:#fff;
+    letter-spacing:-0.5px;
+    text-shadow:0 2px 10px rgba(43,58,103,0.55);
+  }
+  .subtitle{
+    text-align:center;
+    color:#dbe2f5;
+    font-size:14px;
+    margin:0 0 24px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:24px;
+    padding:26px 20px 24px;
+    box-shadow:0 14px 34px rgba(43,58,103,0.18);
+    text-align:center;
+    animation:cardIn .6s ease both;
+  }
+  @keyframes cardIn{
+    0%{ opacity:0; transform:translateY(24px); }
+    100%{ opacity:1; transform:translateY(0); }
+  }
+  .stage{
+    width:100%;
+    aspect-ratio:1/1;
+    border-radius:18px;
+    overflow:hidden;
+    background:#ffffff;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .stage video{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+  .video-bob{
+    animation:bob 3s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0); }
+    50%{ transform:translateY(-6px); }
+  }
+  .stage .idle-hint{
+    position:absolute;
+    bottom:12px;
+    left:0;right:0;
+    text-align:center;
+    font-size:13px;
+    color:var(--blue-dark);
+    background:rgba(255,255,255,0.85);
+    padding:6px 0;
+    font-weight:600;
+  }
+  .make-btn{
+    margin-top:18px;
+    width:100%;
+    border:none;
+    border-radius:16px;
+    padding:16px 0;
+    font-size:17px;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue-dark),var(--navy));
+    box-shadow:0 8px 18px rgba(92,110,168,0.4);
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease, opacity .2s ease;
+  }
+  .make-btn:active{transform:translateY(2px) scale(0.99);}
+  .make-btn:disabled{opacity:.55; cursor:default;}
+  .btn-row{
+    display:none;
+    gap:10px;
+    margin-top:12px;
+  }
+  .again-btn{
+    flex:1;
+    border:2px solid var(--blue-dark);
+    border-radius:16px;
+    padding:13px 0;
+    font-size:15px;
+    font-weight:700;
+    color:var(--blue-dark);
+    background:#fff;
+    cursor:pointer;
+    transition:transform .12s ease, opacity .2s ease;
+  }
+  .again-btn:active{transform:translateY(2px) scale(0.99);}
+  .again-btn.is-disabled{
+    opacity:.4;
+    border-color:#b7c0d6;
+    color:#b7c0d6;
+  }
+  .share-btn{
+    flex:1;
+    border:none;
+    border-radius:16px;
+    padding:13px 0;
+    font-size:15px;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),#d98f22);
+    cursor:pointer;
+    transition:transform .12s ease;
+  }
+  .share-btn:active{transform:translateY(2px) scale(0.99);}
+  .share-btn:disabled{
+    opacity:.45;
+    cursor:default;
+    background:linear-gradient(135deg,#c7ccd6,#a9aeb8);
+  }
+  .btn-pulse{
+    animation:btnPulse .35s ease;
+  }
+  @keyframes btnPulse{
+    0%{ transform:scale(1); }
+    35%{ transform:scale(.94); }
+    65%{ transform:scale(1.04); }
+    100%{ transform:scale(1); }
+  }
+  .shake{
+    animation:shake .45s ease;
+  }
+  @keyframes shake{
+    10%,90%{ transform:translateX(-1px); }
+    20%,80%{ transform:translateX(2px); }
+    30%,50%,70%{ transform:translateX(-4px); }
+    40%,60%{ transform:translateX(4px); }
+  }
+  .share-hint{
+    display:none;
+    margin-top:10px;
+    font-size:12.5px;
+    color:var(--accent);
+    font-weight:600;
+    text-align:center;
+  }
+
+  .result{
+    margin-top:22px;
+    display:none;
+    animation:pop .45s cubic-bezier(.2,1.4,.4,1);
+  }
+  @keyframes pop{
+    0%{opacity:0; transform:translateY(14px) scale(.92);}
+    100%{opacity:1; transform:translateY(0) scale(1);}
+  }
+  .luck-label{
+    font-size:13px;
+    font-weight:700;
+    color:var(--accent);
+    letter-spacing:1px;
+    margin-bottom:10px;
+  }
+  .ticker-wrap{
+    position:relative;
+    display:inline-block;
+  }
+  .ticker{
+    font-size:30px;
+    font-weight:800;
+    color:var(--navy);
+    letter-spacing:0.5px;
+  }
+  .sparkle{
+    position:absolute;
+    font-size:16px;
+    opacity:0;
+    pointer-events:none;
+    animation:sparklePop 1s ease-out forwards;
+  }
+  .sparkle.s1{ top:-12px; left:-22px; animation-delay:.05s; }
+  .sparkle.s2{ top:-16px; right:-22px; animation-delay:.2s; }
+  .sparkle.s3{ bottom:-10px; left:50%; margin-left:-8px; animation-delay:.35s; }
+  @keyframes sparklePop{
+    0%{ opacity:0; transform:scale(.3) rotate(-10deg); }
+    40%{ opacity:1; transform:scale(1.15) rotate(5deg); }
+    100%{ opacity:0; transform:scale(.9) rotate(0deg); }
+  }
+  .detail-hint{
+    position:relative;
+    display:inline-block;
+    overflow:hidden;
+    margin-top:16px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:700;
+    color:#fff;
+    background:linear-gradient(135deg,var(--blue-dark),var(--navy));
+    padding:9px 20px;
+    border-radius:999px;
+  }
+  .detail-hint:hover{
+    background:linear-gradient(135deg,#4c5c8f,#1f2a4d);
+  }
+  .detail-hint::after{
+    content:'';
+    position:absolute;
+    top:0;
+    left:-60%;
+    width:40%;
+    height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform:skewX(-20deg);
+    animation:shine 2.5s ease-in-out infinite;
+  }
+  @keyframes shine{
+    0%{ left:-60%; }
+    35%{ left:130%; }
+    100%{ left:130%; }
+  }
+  .kr-name{
+    font-size:16px;
+    color:#5b6786;
+    margin-top:8px;
+    font-weight:600;
+  }
+  .flavor{
+    margin-top:14px;
+    font-size:16px;
+    font-weight:400;
+    line-height:1.6;
+    color:#42506e;
+    background:#f4f6fc;
+    border-radius:14px;
+    padding:14px 16px;
+    white-space:pre-line;
+  }
+  .disclaimer{
+    margin-top:22px;
+    font-size:11.5px;
+    color:#9aa3b8;
+    text-align:center;
+    line-height:1.5;
+  }
+  footer{
+    text-align:center;
+    color:#c9d2ec;
+    font-size:12px;
+    margin-top:22px;
+  }
+  .toast{
+    position:fixed;
+    left:50%;
+    bottom:28px;
+    transform:translateX(-50%) translateY(16px);
+    background:rgba(43,58,103,0.94);
+    color:#fff;
+    font-size:14px;
+    font-weight:700;
+    padding:12px 22px;
+    border-radius:999px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.25);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease, transform .25s ease;
+    z-index:1000;
+    max-width:90vw;
+    text-align:center;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="wrap">
+  <div class="moon"></div>
+  <h1>송편 주식운세</h1>
+  <p class="subtitle">초스가 정성껏 빚어주는 오늘의 행운 미국주식 🌕</p>
+
+  <div class="card">
+    <div class="stage">
+      <video id="mascotVideo" class="video-bob" src="assets/songpyeon.mp4" poster="assets/poster.jpg" playsinline preload="auto"></video>
+      <div class="idle-hint" id="idleHint">버튼을 눌러 송편을 빚어보세요</div>
+    </div>
+
+    <button class="make-btn" id="makeBtn">🥟 송편 빚기</button>
+    <div class="btn-row" id="btnRow">
+      <button class="again-btn" id="againBtn">다시 송편빚기</button>
+      <button class="share-btn" id="shareBtn">공유하기</button>
+    </div>
+    <p class="share-hint" id="shareHint">공유하면 다시 빚기 1회가 추가돼요!</p>
+
+    <div class="result" id="result">
+      <div class="luck-label">오늘의 행운 종목</div>
+      <div class="ticker-wrap">
+        <span class="sparkle s1">✨</span>
+        <span class="sparkle s2">✨</span>
+        <span class="sparkle s3">✨</span>
+        <div class="ticker" id="tickerOut">-</div>
+      </div>
+      <div class="kr-name" id="nameOut">-</div>
+      <a class="detail-hint" id="tickerLink" href="#" target="_blank" rel="noopener">종목 자세히보기 →</a>
+      <div class="flavor" id="flavorOut"></div>
+    </div>
+
+    <p class="disclaimer">* 이 콘텐츠는 추석 재미 콘텐츠이며 투자 조언이 아닙니다.<br>투자 판단과 책임은 본인에게 있습니다.</p>
+  </div>
+
+  <footer>Happy Chuseok 🌕 with 초스</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const stocks = [
+  ["NVDA","엔비디아"],["TSLA","테슬라"],["PLTR","팔란티어"],["GOOGL","알파벳A(구글)"],
+  ["AMD","AMD"],["TSM","TSMC"],["MSFT","마이크로소프트"],["AVGO","브로드컴"],
+  ["AMZN","아마존닷컴"],["META","메타플랫폼스"],["MU","마이크론테크놀러지"],["CRDO","크레도테크놀러지"],
+  ["AAPL","애플"],["IONQ","아이온큐"],["MRVL","마벨테크놀러지그룹"],["CLS","셀레스티카"],
+  ["ALAB","아스테라랩스"],["VRT","버티브홀딩스"],["ARM","ARM홀딩스"],["ORCL","오라클"],
+  ["SNDK","샌디스크"],["COHR","코히어런트"],["ASML","ASML홀딩"],["COIN","코인베이스"],
+  ["VST","비스트라에너지"],["TLN","탈렌에너지"],["RKLB","로켓랩USA"],["GEV","GE버노바"],
+  ["NFLX","넷플릭스"],["LITE","루멘텀홀딩스"],["LLY","일라이릴리"],["BE","블룸에너지"],
+  ["CRWD","크라우드스트라이크홀딩스"],["APP","앱러빈"],["CRM","세일즈포스"],["FSLR","퍼스트솔라"],
+  ["UNH","유나이티드헬스그룹"],["CRWV","코어위브"],["QCOM","퀄컴"],["INTC","인텔"],
+  ["MSTR","스트래티지"],["TEM","템퍼스AI"],["DELL","델테크놀러지스"],["SMR","뉴스케일파워"],
+  ["ANET","아리스타네트웍스"],["WDC","웨스턴디지털"],["RDDT","레딧"],["NBIS","네비우스그룹"],
+  ["UBER","우버테크놀러지스"],["IREN","아이렌"]
+];
+
+// 종목 성격별 그룹
+const sectorOf = {
+  // 반도체 / AI칩
+  NVDA:'semi', AMD:'semi', TSM:'semi', AVGO:'semi', MU:'semi', CRDO:'semi', MRVL:'semi',
+  ALAB:'semi', ARM:'semi', SNDK:'semi', COHR:'semi', ASML:'semi', QCOM:'semi', INTC:'semi',
+  WDC:'semi', LITE:'semi', CLS:'semi',
+  // AI / 클라우드 / 데이터센터
+  PLTR:'ai_cloud', ORCL:'ai_cloud', CRWV:'ai_cloud', NBIS:'ai_cloud', VRT:'ai_cloud',
+  ANET:'ai_cloud', IONQ:'ai_cloud', DELL:'ai_cloud',
+  // 빅테크 / 플랫폼
+  GOOGL:'big_tech', MSFT:'big_tech', AMZN:'big_tech', META:'big_tech', AAPL:'big_tech',
+  CRM:'big_tech', NFLX:'big_tech', RDDT:'big_tech', APP:'big_tech', UBER:'big_tech',
+  // 모빌리티 / 우주
+  TSLA:'mobility', RKLB:'mobility',
+  // 에너지 / 전력
+  VST:'energy', TLN:'energy', GEV:'energy', BE:'energy', FSLR:'energy', SMR:'energy',
+  // 헬스케어 / 바이오
+  LLY:'health', UNH:'health', TEM:'health',
+  // 보안
+  CRWD:'security',
+  // 디지털자산
+  COIN:'crypto', MSTR:'crypto', IREN:'crypto'
+};
+
+const flavorsBySector = {
+  semi: [
+    "쌀가루 한 톨까지 정교하게 빚어내듯,\n미세공정처럼 촘촘한 기술력이 눈에 띄는 종목이에요.",
+    "송편 반죽을 곱게 치대듯,\n꾸준히 다듬어온 기술력이 쌓인 종목이랍니다.",
+    "작은 송편 하나에도 정성이 담기듯,\n이 종목의 디테일한 경쟁력을 살펴보세요.",
+    "속을 꽉 채운 송편처럼,\n핵심 기술이 알차게 들어찬 종목이에요.",
+    "정교한 빚기 실력처럼,\n세밀한 공정 경쟁력이 강점인 종목이네요."
+  ],
+  ai_cloud: [
+    "커다란 시루에 송편을 가득 찌듯,\n대규모로 데이터를 다루는 종목이에요.",
+    "명절 음식을 넉넉히 준비하듯,\n인프라를 든든하게 쌓아가는 종목이랍니다.",
+    "보이지 않는 부엌에서 정성껏 준비하듯,\n뒤에서 AI를 떠받치는 종목이에요.",
+    "가마솥처럼 큰 그릇으로 데이터를 담아내는 종목,\n눈여겨보세요.",
+    "명절 상 차리듯 차근차근 인프라를 갖춰가는 종목이에요."
+  ],
+  big_tech: [
+    "온 가족이 둘러앉는 명절 상처럼,\n이미 우리 일상 곳곳에 자리한 종목이에요.",
+    "손맛 좋은 큰집 송편처럼,\n오래도록 사랑받아온 이름이랍니다.",
+    "명절마다 빠지지 않는 단골 메뉴처럼,\n꾸준한 존재감이 있는 종목이에요.",
+    "큰 가마솥처럼 다양한 사업을 두루 담아내는 종목이네요.",
+    "익숙한 손맛처럼 안정적인 매력이 있는 종목이에요."
+  ],
+  mobility: [
+    "달까지 배달 가는 상상처럼,\n새로운 길을 개척하는 종목이에요.",
+    "명절 귀성길처럼 먼 길을 씩씩하게 달려가는 종목이랍니다.",
+    "보름달을 향해 쏘아 올리듯,\n높은 곳을 바라보는 종목이에요."
+  ],
+  energy: [
+    "송편 찔 물을 끓이는 불처럼,\n세상을 움직이는 힘이 되는 종목이에요.",
+    "명절 내내 꺼지지 않는 아궁이불처럼,\n꾸준한 에너지를 공급하는 종목이랍니다.",
+    "따뜻한 온기를 나누듯,\n전력을 든든히 책임지는 종목이에요.",
+    "보름달빛처럼 은은하지만 꾸준한 에너지를 내는 종목이네요."
+  ],
+  health: [
+    "몸보신 명절 음식처럼,\n건강과 맞닿아 있는 종목이에요.",
+    "정성 들인 약손처럼,\n세심하게 돌보는 분야의 종목이랍니다.",
+    "명절 보약 챙기듯,\n꾸준히 지켜볼 만한 종목이에요."
+  ],
+  security: [
+    "차례상을 지키는 문지기처럼,\n안전을 책임지는 종목이에요.",
+    "명절 대문 단속하듯,\n든든하게 지켜주는 종목이랍니다."
+  ],
+  crypto: [
+    "새로운 형태의 세뱃돈처럼,\n디지털 자산과 맞닿은 종목이에요.",
+    "보이지 않는 곳간처럼,\n디지털로 재산을 쌓아가는 종목이네요.",
+    "달빛 아래 반짝이는 동전처럼,\n변동성 있는 만큼 관심이 쏠리는 종목이에요."
+  ]
+};
+
+// 성격에 상관없이 두루 쓰이는 기본 멘트
+const flavors = [
+  "보름달처럼 둥글게,\n꾸준히 채워가는 흐름이 좋아 보여요.",
+  "예쁘게 빚은 송편처럼 안정적인 모양새가 눈에 띄네요.",
+  "속이 꽉 찬 송편처럼 내실 있는 성장이 기대돼요.",
+  "달빛 아래 반짝이는 종목,\n오늘 한 번 살펴보는 건 어때요?",
+  "정성껏 빚은 만큼 장기적으로 지켜볼 가치가 있어요.",
+  "올해 추석엔 이 종목과 함께 소원을 빌어보세요.",
+  "쫀득한 송편처럼 꾸준한 관심이 필요한 종목이에요.",
+  "풍성한 한가위처럼 포트폴리오도 든든하게 채워보세요.",
+  "정성 들여 빚은 송편처럼,\n오늘 하루 좋은 일만 가득하길 바라요.",
+  "동그란 보름달만큼 마음도 넉넉해지는 하루 되세요.",
+  "이 종목,\n왠지 모르게 끌리는 촉이 오지 않나요?",
+  "송편 속처럼 알차게,\n차근차근 채워가면 좋겠어요.",
+  "오늘 밤 보름달에 소원 빌 때 이 종목도 함께 빌어보세요.",
+  "한가위 보름달처럼 둥글둥글 잘 풀리는 하루 되시길.",
+  "쫄깃한 송편 한 입처럼,\n든든한 느낌을 주는 종목이에요.",
+  "차례상 위 송편처럼 정갈하게 자리잡은 흐름이 눈에 들어와요.",
+  "달빛에 비친 이 종목,\n오늘은 유심히 지켜봐도 좋을 것 같아요.",
+  "송편 빚는 손길처럼 꾸준함이 빛을 발할 종목이에요.",
+  "보름달 뜨는 밤,\n이 종목과 함께 행운을 빌어보는 건 어떨까요.",
+  "속이 알찬 송편처럼,\n겉보다 내용이 탄탄한 종목이랍니다.",
+  "이번 한가위엔 이 종목 이름 한 번쯤 기억해두세요.",
+  "달콤한 송편처럼 은근히 계속 생각나는 종목이 될지도 몰라요.",
+  "풍성한 한가위 밥상처럼,\n포트폴리오도 골고루 채워보세요.",
+  "송편처럼 여러 번 빚어봐도 늘 다른 매력이 있는 종목이에요.",
+  "보름달 아래에서는 왠지 다 잘될 것 같은 기분,\n아시죠?",
+  "정성이 통하면 좋은 결과로 돌아온다는 말,\n이 종목에도 적용될까요.",
+  "한가위 보너스처럼 반가운 소식이 있을지도 모르겠어요.",
+  "달이 차오르듯 천천히 지켜볼 만한 종목이에요.",
+  "송편 하나에 소원 하나,\n이 종목에도 소원 하나 얹어보세요.",
+  "은은한 달빛처럼 꾸준히 존재감을 드러내는 종목이네요."
+];
+
+const video = document.getElementById('mascotVideo');
+video.playbackRate = 1.8;
+const makeBtn = document.getElementById('makeBtn');
+const btnRow = document.getElementById('btnRow');
+const againBtn = document.getElementById('againBtn');
+const shareBtn = document.getElementById('shareBtn');
+const shareHint = document.getElementById('shareHint');
+const result = document.getElementById('result');
+const idleHint = document.getElementById('idleHint');
+const tickerLink = document.getElementById('tickerLink');
+const tickerOut = document.getElementById('tickerOut');
+const nameOut = document.getElementById('nameOut');
+const flavorOut = document.getElementById('flavorOut');
+const toast = document.getElementById('toast');
+
+let toastTimer;
+function showToast(msg, duration = 2200){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+const FREE_REMAKES = 1;
+const MAX_SHARE_BONUS = 1;
+let remakeCount = 0;
+let bonusRemakes = 0;
+let shareBonusUsed = false;
+
+function remakesLeft(){
+  return FREE_REMAKES + bonusRemakes - remakeCount;
+}
+
+function updateAgainState(){
+  const left = remakesLeft();
+  againBtn.classList.toggle('is-disabled', left <= 0);
+  shareBtn.disabled = shareBonusUsed;
+  if(left <= 0){
+    shareHint.style.display = 'block';
+    shareHint.textContent = shareBonusUsed
+      ? '무료 재도전 횟수를 모두 사용했어요!'
+      : '공유하면 다시 빚기 1회가 추가돼요!';
+  }else{
+    shareHint.style.display = 'none';
+  }
+}
+
+function pickStock(){
+  const [ticker, name] = stocks[Math.floor(Math.random()*stocks.length)];
+  const sector = sectorOf[ticker];
+  const pool = sector ? flavorsBySector[sector].concat(flavors) : flavors;
+  const flavor = pool[Math.floor(Math.random()*pool.length)];
+  tickerOut.textContent = ticker;
+  nameOut.textContent = name;
+  flavorOut.textContent = flavor;
+  const utm = "utm_source=songpyeon-stock&utm_medium=referral&utm_campaign=chuseok";
+  tickerLink.href = "https://www.choicestock.co.kr/search/summary/" + ticker + "?" + utm;
+}
+
+function showResult(){
+  pickStock();
+  result.style.display = 'block';
+  makeBtn.style.display = 'none';
+  btnRow.style.display = 'flex';
+  updateAgainState();
+}
+
+function resetToIdle(){
+  makeBtn.disabled = false;
+  idleHint.style.display = 'block';
+}
+
+function playMaking(){
+  makeBtn.disabled = true;
+  idleHint.style.display = 'none';
+  result.style.display = 'none';
+  btnRow.style.display = 'none';
+  shareHint.style.display = 'none';
+  video.currentTime = 0;
+  const playPromise = video.play();
+  if(playPromise && playPromise.catch){
+    playPromise.catch(() => {
+      // 재생이 막히면(자동재생 정책 등) 바로 결과를 보여줌
+      showResult();
+    });
+  }
+}
+
+video.addEventListener('ended', showResult);
+
+video.addEventListener('error', () => {
+  // 영상을 불러오지 못한 경우 안내 후 초기 상태로 복귀
+  alert('영상을 불러오지 못했어요. index.html과 assets 폴더가 같은 위치에 있는지 확인해주세요.');
+  resetToIdle();
+});
+
+function pulse(btn){
+  btn.classList.remove('btn-pulse');
+  void btn.offsetWidth; // 애니메이션 재시작을 위한 강제 리플로우
+  btn.classList.add('btn-pulse');
+}
+function shakeEl(el){
+  el.classList.remove('shake');
+  void el.offsetWidth;
+  el.classList.add('shake');
+}
+[makeBtn, againBtn, shareBtn].forEach(btn => {
+  btn.addEventListener('click', () => pulse(btn));
+});
+
+makeBtn.addEventListener('click', playMaking);
+
+againBtn.addEventListener('click', () => {
+  if(remakesLeft() <= 0){
+    shakeEl(againBtn);
+    return;
+  }
+  remakeCount++;
+  playMaking();
+});
+
+function grantShareBonus(){
+  if(shareBonusUsed) return;
+  bonusRemakes = Math.min(bonusRemakes + 1, MAX_SHARE_BONUS);
+  shareBonusUsed = true;
+  updateAgainState();
+}
+
+shareBtn.addEventListener('click', async () => {
+  if(shareBonusUsed) return;
+  const ticker = tickerOut.textContent;
+  const name = nameOut.textContent;
+  const shareText = `초스가 빚어준 오늘의 행운 미국주식은 ${ticker}(${name})! 너의 행운 종목도 뽑아봐 🥟🌕`;
+  const shareUrl = location.href;
+  const fullText = `${shareText}\n${shareUrl}`;
+
+  if(navigator.share){
+    try{
+      await navigator.share({ title:'송편 주식운세', text:shareText, url:shareUrl });
+      showToast('공유했어요!');
+      grantShareBonus();
+    }catch(e){
+      // 공유 시트를 취소한 경우 - 보너스 지급 안 함
+    }
+    return;
+  }
+
+  try{
+    if(!(navigator.clipboard && navigator.clipboard.writeText)) throw new Error('no-clipboard');
+    await navigator.clipboard.writeText(fullText);
+    showToast('링크를 복사했어요!');
+  }catch(e){
+    prompt('아래 문구를 길게 눌러 복사한 뒤 공유해보세요 🥟', fullText);
+  }
+  grantShareBonus();
+});
+
+// decorative stars
+const starsWrap = document.getElementById('stars');
+for(let i=0;i<28;i++){
+  const s = document.createElement('span');
+  s.style.left = Math.random()*100 + '%';
+  s.style.top = Math.random()*180 + 'px';
+  const size = (1.5 + Math.random()*2).toFixed(1);
+  s.style.width = size+'px';
+  s.style.height = size+'px';
+  s.style.animationDuration = (2 + Math.random()*3).toFixed(1) + 's';
+  s.style.animationDelay = (Math.random()*3).toFixed(1) + 's';
+  starsWrap.appendChild(s);
+}
+
+// 대기 중일 때만 마스코트가 살짝 둥실거리도록
+// 결과 화면에서는 둥실거림 없이 정지 프레임으로 고정 (최초 대기 상태에서만 살짝 둥실거림)
+video.addEventListener('play', () => video.classList.remove('video-bob'));
+</script>
+
+</body>
+</html>
