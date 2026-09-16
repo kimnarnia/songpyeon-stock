@@ -40,7 +40,7 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    padding:20px 0;
+    padding:12px 0;
   }
   .wrap{
     width:100%;
@@ -253,7 +253,9 @@
   }
   .ticker-wrap{
     position:relative;
-    display:inline-block;
+    display:block;
+    width:max-content;
+    margin:4px auto 0;
   }
   .ticker{
     font-size:26px;
@@ -311,7 +313,7 @@
   .kr-name{
     font-size:14px;
     color:#5b6786;
-    margin-top:5px;
+    margin-top:0;
     font-weight:600;
   }
   .flavor{
@@ -384,13 +386,13 @@
     <div class="result" id="result">
       <div class="flavor" id="flavorOut"></div>
       <div class="luck-label">오늘의 행운 종목</div>
+      <div class="kr-name" id="nameOut">-</div>
       <div class="ticker-wrap">
         <span class="sparkle s1">✨</span>
         <span class="sparkle s2">✨</span>
         <span class="sparkle s3">✨</span>
         <div class="ticker" id="tickerOut">-</div>
       </div>
-      <div class="kr-name" id="nameOut">-</div>
       <a class="detail-hint" id="tickerLink" href="#" target="_blank" rel="noopener">종목 자세히보기 →</a>
     </div>
 
