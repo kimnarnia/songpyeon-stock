@@ -657,17 +657,6 @@ shareBtn.addEventListener('click', async () => {
   const shareUrl = location.href;
   const fullText = `${shareText}\n${shareUrl}`;
 
-  if(navigator.share){
-    try{
-      await navigator.share({ title:'송편 주식운세', text:shareText, url:shareUrl });
-      showToast('공유했어요!');
-      grantShareBonus();
-    }catch(e){
-      // 공유 시트를 취소한 경우 - 보너스 지급 안 함
-    }
-    return;
-  }
-
   try{
     if(!(navigator.clipboard && navigator.clipboard.writeText)) throw new Error('no-clipboard');
     await navigator.clipboard.writeText(fullText);
