@@ -51,8 +51,8 @@
     width:58px;height:58px;border-radius:50%;
     background:radial-gradient(circle at 35% 30%, #fffdf5, var(--moon) 60%, #ffe9ba 100%);
     box-shadow:
-      0 0 14px 5px rgba(255,244,214,0.5),
-      0 0 26px 9px rgba(255,230,170,0.24);
+      0 0 10px 3px rgba(255,244,214,0.32),
+      0 0 18px 6px rgba(255,230,170,0.14);
     margin:0 auto 8px;
     position:relative;
     animation:moonGlow 4.5s ease-in-out infinite;
@@ -60,13 +60,13 @@
   @keyframes moonGlow{
     0%,100%{
       box-shadow:
-        0 0 14px 5px rgba(255,244,214,0.45),
-        0 0 26px 9px rgba(255,230,170,0.2);
+        0 0 10px 3px rgba(255,244,214,0.28),
+        0 0 18px 6px rgba(255,230,170,0.12);
     }
     50%{
       box-shadow:
-        0 0 20px 7px rgba(255,244,214,0.7),
-        0 0 36px 14px rgba(255,230,170,0.32);
+        0 0 14px 4px rgba(255,244,214,0.42),
+        0 0 24px 9px rgba(255,230,170,0.18);
     }
   }
   .stars{
@@ -130,15 +130,11 @@
     0%,100%{ transform:translateY(0); }
     50%{ transform:translateY(-6px); }
   }
-  .stage .idle-hint{
-    position:absolute;
-    bottom:8px;
-    left:0;right:0;
+  .idle-hint{
+    margin-top:8px;
     text-align:center;
     font-size:12px;
     color:var(--blue-dark);
-    background:rgba(255,255,255,0.85);
-    padding:4px 0;
     font-weight:600;
   }
   .make-btn{
@@ -369,8 +365,8 @@
   <div class="card">
     <div class="stage">
       <video id="mascotVideo" class="video-bob" src="assets/songpyeon.mp4" poster="assets/poster.jpg" playsinline preload="auto"></video>
-      <div class="idle-hint" id="idleHint">버튼을 눌러 송편을 빚어보세요</div>
     </div>
+    <div class="idle-hint" id="idleHint">버튼을 눌러 송편을 빚어보세요</div>
 
     <button class="make-btn" id="makeBtn">🥟 송편 빚기</button>
 
