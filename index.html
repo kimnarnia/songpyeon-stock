@@ -258,7 +258,8 @@
     text-align:left;
     transition:background .15s ease, transform .12s ease;
   }
-  .stock-banner:active{
+  .stock-banner:active,
+  .stock-banner.is-pressed{
     transform:scale(0.98);
     background:#eef2fb;
   }
@@ -267,7 +268,7 @@
   }
   .stock-top{
     display:flex;
-    align-items:baseline;
+    align-items:center;
     gap:8px;
     flex-wrap:wrap;
   }
@@ -279,6 +280,7 @@
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
     font-size:22px;
     font-weight:800;
+    line-height:1;
     color:var(--navy);
     letter-spacing:0.5px;
   }
@@ -299,6 +301,7 @@
   }
   .kr-name{
     font-size:13px;
+    line-height:1;
     color:#5b6786;
     font-weight:600;
   }
@@ -665,6 +668,14 @@ function shakeEl(el){
 }
 [makeBtn, againBtn, shareBtn].forEach(btn => {
   btn.addEventListener('click', () => pulse(btn));
+});
+
+// iOS Safari는 링크에 터치 리스너가 없으면 :active가 먹지 않으므로 직접 눌림 효과를 준다
+['pointerdown','touchstart'].forEach(ev => {
+  tickerLink.addEventListener(ev, () => tickerLink.classList.add('is-pressed'), { passive:true });
+});
+['pointerup','pointercancel','touchend','touchcancel','mouseleave'].forEach(ev => {
+  tickerLink.addEventListener(ev, () => tickerLink.classList.remove('is-pressed'));
 });
 
 makeBtn.addEventListener('click', playMaking);
